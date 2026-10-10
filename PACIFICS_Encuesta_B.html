@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PACIFICS — Encuesta para profesionales y estudiantes de ciberseguridad</title>
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--text:#1b1f24;--muted:#5b6672;--line:#d6dce3;--accent:#1f5fbf;--accent-t:#fff;--err:#b3261e;--soft:#e8f0fb}
+@media (prefers-color-scheme:dark){:root{--bg:#101317;--card:#181d23;--text:#e8ebef;--muted:#9aa6b2;--line:#2b333c;--accent:#6ea3f0;--accent-t:#0b1626;--err:#ff8a80;--soft:#1e2a3a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#app{max-width:760px;margin:0 auto;padding:16px 16px 48px}
+.top{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;margin:8px 0 12px}
+.top h1{font-size:1.2rem;line-height:1.3;margin:0}
+.lang{display:flex;gap:4px;flex:none}
+.lang button{border:1px solid var(--line);background:var(--card);color:var(--text);padding:4px 10px;border-radius:6px;cursor:pointer;font:inherit;font-size:.85rem}
+.lang button[aria-pressed=true]{background:var(--accent);color:var(--accent-t);border-color:var(--accent)}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:16px}
+.bar i{display:block;height:100%;background:var(--accent);transition:width .25s}
+.sec{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px}
+.sec h2{margin:0 0 8px;font-size:1.15rem}
+.intro{white-space:pre-line;color:var(--muted);margin:0 0 16px}
+.q{padding:14px 0;border-top:1px solid var(--line)}
+.q:first-of-type{border-top:0}
+.q.bad{border-left:3px solid var(--err);padding-left:12px}
+.lbl{font-weight:600;margin-bottom:6px}
+.star{color:var(--err)}
+.help{color:var(--muted);font-size:.9rem;margin:0 0 8px}
+.info h3{margin:0 0 4px;font-size:1rem}
+.info{background:var(--soft);border-radius:8px;padding:12px 14px;margin:8px 0;border-top:0}
+.err{color:var(--err);font-size:.88rem;min-height:0}
+.opts{display:flex;flex-direction:column;gap:2px}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:6px 8px;border-radius:8px;cursor:pointer}
+.opt:hover{background:var(--soft)}
+.opt input{margin-top:5px;flex:none}
+.opt.oo{align-items:center}
+input[type=text],input[type=email],textarea,select{width:100%;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.oth{flex:1;min-width:0;padding:4px 8px!important}
+.scale{display:flex;gap:6px;flex-wrap:wrap}
+.sc{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:42px;padding:6px;border:1px solid var(--line);border-radius:8px;cursor:pointer}
+.scl{display:flex;justify-content:space-between;color:var(--muted);font-size:.85rem;margin-top:4px}
+.gridwrap{overflow-x:auto}
+.grid{border-collapse:collapse;min-width:100%}
+.grid th,.grid td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:center;font-size:.88rem;font-weight:400;vertical-align:middle}
+.grid th[scope=row]{text-align:left;min-width:200px}
+.grid thead th{font-weight:600}
+.nav{display:flex;justify-content:space-between;gap:12px;margin-top:20px}
+.btn{font:inherit;border:0;background:var(--accent);color:var(--accent-t);padding:10px 22px;border-radius:8px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn:disabled{opacity:.4;cursor:default}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.foot{color:var(--muted);font-size:.8rem;margin-top:16px;text-align:center}
+.foot a{color:var(--muted)}
+table.adm{border-collapse:collapse;margin:8px 0}
+.adm td{padding:4px 12px 4px 0}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<noscript>Esta encuesta necesita JavaScript. / This survey needs JavaScript.</noscript>
+<script>
+(function(){
+"use strict";
+const DEF={"title":"PACIFICS — Encuesta para profesionales y estudiantes de ciberseguridad||PACIFICS — Survey for cybersecurity professionals and students","desc":"Estamos investigando cómo las personas que trabajan o estudian en ciberseguridad investigan, priorizan y corrigen hallazgos de seguridad. Nos interesa tu experiencia real, incluidas las partes que funcionan bien. Duración estimada: 8–12 minutos (menos si tu perfil no requiere todas las secciones). La participación es voluntaria: puedes omitir preguntas opcionales y salir cuando quieras. NO escribas datos confidenciales (clientes, IP, credenciales, detalles de incidentes reales). No pedimos tu nombre. Analizaremos las respuestas de forma agregada. Solo si lo aceptas al final, te pediremos un correo para invitarte a una entrevista; se guarda aparte de tus respuestas. Contacto: {{CONTACT}}||We are researching how people who work or study in cybersecurity investigate, prioritize and fix security findings. We are interested in your real experience, including what works well. Estimated time: 8–12 minutes (less if your profile does not require every section). Participation is voluntary: you may skip optional questions and leave at any time. DO NOT write confidential data (clients, IPs, credentials, details of real incidents). We do not ask for your name. Responses are analyzed in aggregate. Only if you agree at the end, we will ask for an email to invite you to an interview; it is stored separately from your answers. Contact: {{CONTACT}}","confirm":"Gracias. Tus respuestas fueron registradas.||Thank you. Your responses have been recorded.","sections":[{"key":"S1","q":[{"k":"mc","id":"B00","t":"¿Tienes 18 años o más y aceptas participar?||Are you 18 or older, and do you agree to take part?","o":"Sí, tengo 18 años o más y acepto participar||Yes, I am 18 or older and I agree to take part;;No||No","req":1,"go":{"1":"SUBMIT"}}]},{"key":"S2","t":"Tu perfil||Your profile","q":[{"k":"ls","id":"B01","t":"¿En qué país resides actualmente?||Which country do you currently live in?","o":"Argentina||Argentina;;Bolivia||Bolivia;;Brasil||Brazil;;Chile||Chile;;Colombia||Colombia;;Costa Rica||Costa Rica;;Cuba||Cuba;;Ecuador||Ecuador;;El Salvador||El Salvador;;Guatemala||Guatemala;;Honduras||Honduras;;México||Mexico;;Nicaragua||Nicaragua;;Panamá||Panama;;Paraguay||Paraguay;;Perú||Peru;;República Dominicana||Dominican Republic;;Uruguay||Uruguay;;Venezuela||Venezuela;;Otro país de América||Other country in the Americas;;Estados Unidos||United States;;Canadá||Canada;;España||Spain;;Reino Unido||United Kingdom;;Alemania||Germany;;Francia||France;;Italia||Italy;;Portugal||Portugal;;Otro país de Europa||Other European country;;India||India;;Otro país de Asia-Pacífico||Other Asia-Pacific country;;África y Medio Oriente||Africa and Middle East;;Prefiero no decir||Prefer not to say","req":1},{"k":"mc","id":"B03","t":"¿Cuántos años de experiencia profesional tienes en ciberseguridad o un área técnica relacionada?||How many years of professional experience do you have in cybersecurity or a related technical field?","o":"Ninguna aún (solo formación o autoestudio)||None yet (education or self-study only);;Menos de 1 año||Less than 1 year;;1–2 años||1–2 years;;3–5 años||3–5 years;;6–10 años||6–10 years;;Más de 10 años||More than 10 years","req":1},{"k":"mc","id":"B06","t":"¿Dónde trabajas principalmente?||Where do you mainly work?","o":"En una organización que usa seguridad para sí misma (equipo interno)||In an organization that runs security for itself (in-house team);;En una consultora de seguridad o TI||At a security or IT consultancy;;En un proveedor de servicios gestionados (MSSP, MDR, SOC como servicio)||At a managed service provider (MSSP, MDR, SOC-as-a-service);;En un fabricante o proveedor de productos de seguridad||At a security product vendor;;Sector público o gobierno||Public sector or government;;Universidad o centro de investigación||University or research center;;Independiente o freelance||Independent or freelance;;No trabajo actualmente||I am not currently working;;Otro||Other"},{"k":"mc","id":"B07","t":"¿Cuántas personas trabajan en tu organización?||How many people work in your organization?","o":"1–10||1–10;;11–50||11–50;;51–200||51–200;;201–1.000||201–1,000;;1.001–5.000||1,001–5,000;;Más de 5.000||More than 5,000;;No sé||Don't know;;Prefiero no decir||Prefer not to say"},{"k":"mc","id":"B08","t":"¿En qué sector está tu organización?||Which sector is your organization in?","o":"Financiero y seguros||Financial services and insurance;;Salud||Healthcare;;Gobierno||Government;;Tecnología y software||Technology and software;;Telecomunicaciones||Telecommunications;;Comercio y e-commerce||Retail and e-commerce;;Manufactura y energía||Manufacturing and energy;;Educación||Education;;Servicios profesionales||Professional services;;Otro||Other;;Prefiero no decir||Prefer not to say"},{"k":"mc","id":"B09","t":"¿Cómo llegaste a esta encuesta?||How did you find this survey?","o":"LinkedIn||LinkedIn;;Comunidad en línea (Discord, Slack, Telegram, Reddit…)||Online community (Discord, Slack, Telegram, Reddit…);;Mi universidad o institución||My university or institution;;Un colega o contacto||A colleague or contact;;Evento o conferencia||Event or conference;;Newsletter o medio especializado||Newsletter or specialist media;;Otro||Other;;Prefiero no decir||Prefer not to say"},{"k":"mc","id":"B02","t":"¿Cuál describe mejor tu situación actual?||Which best describes your current situation?","o":"Trabajo en ciberseguridad, TI, desarrollo o cloud||I work in cybersecurity, IT, development or cloud;;Soy estudiante y además trabajo en TI o ciberseguridad||I am a student and also work in IT or cybersecurity;;Estoy entre empleos o en transición hacia el área||I am between jobs or transitioning into the field;;Soy estudiante o autodidacta y no trabajo en el área||I am a student or self-learner and do not work in the field","req":1,"go":{"3":"SS"}}]},{"key":"S3","t":"Herramientas y nube||Tools and cloud","d":"Los productos mencionados son solo ejemplos; no son recomendaciones ni una lista completa. \"No lo conozco\" es una respuesta válida.||Products mentioned are examples only; they are not endorsements or a complete list. \"Not familiar\" is a valid answer.","q":[{"k":"gr","id":"B10","t":"Indica tu experiencia con cada categoría de herramientas||Indicate your experience with each tool category","req":1,"r":"SIEM (p. ej., Microsoft Sentinel, Splunk, Wazuh)||SIEM (e.g., Microsoft Sentinel, Splunk, Wazuh);;EDR/XDR (p. ej., CrowdStrike, Microsoft Defender)||EDR/XDR (e.g., CrowdStrike, Microsoft Defender);;SOAR (automatización de respuesta)||SOAR (response automation);;Escáneres de vulnerabilidades (p. ej., Tenable, Qualys, OpenVAS)||Vulnerability scanners (e.g., Tenable, Qualys, OpenVAS);;CSPM/CNAPP (postura y seguridad cloud) (p. ej., Wiz, Orca, Prisma Cloud)||CSPM/CNAPP (cloud posture and security) (e.g., Wiz, Orca, Prisma Cloud);;IAM y seguridad de identidades||IAM and identity security;;Gestión de superficie de ataque (ASM)||Attack surface management (ASM);;Seguridad de aplicaciones (SAST/DAST/SCA)||Application security (SAST/DAST/SCA);;Inteligencia de amenazas||Threat intelligence;;Tickets y gestión de incidentes||Ticketing and incident management;;Herramientas de pruebas de penetración||Penetration testing tools;;Análisis y visualización basados en grafos (p. ej., BloodHound, Cartography)||Graph-based analysis and visualization (e.g., BloodHound, Cartography);;Copilotos y agentes de IA para seguridad||AI copilots and agents for security;;Servicios nativos de seguridad de la nube (p. ej., GuardDuty, Security Hub, Defender for Cloud)||Cloud-native security services (e.g., GuardDuty, Security Hub, Defender for Cloud)","c":"Lo uso en mi trabajo||Use it at work;;Lo he usado en laboratorio, estudio o proyecto||Used it in a lab, study or project;;Lo evalué o probé brevemente||Evaluated or briefly tried it;;Solo lo conozco de nombre||Only know it by name;;No lo conozco||Not familiar with it"},{"k":"cb","id":"B11","t":"¿Cuáles de estos productos o enfoques usas actualmente (trabajo o laboratorio)? (marca todos los que apliquen)||Which of these products or approaches do you currently use (work or lab)? (select all that apply)","o":"Microsoft Sentinel||Microsoft Sentinel;;Splunk||Splunk;;CrowdStrike||CrowdStrike;;Palo Alto Networks||Palo Alto Networks;;Wiz||Wiz;;Orca Security||Orca Security;;Tenable||Tenable;;Qualys||Qualys;;Wazuh||Wazuh;;Servicios nativos de AWS||AWS native services;;Servicios nativos de Azure||Azure native services;;Servicios nativos de Google Cloud||Google Cloud native services;;Herramientas open source de seguridad cloud o de grafos||Open-source cloud security or graph tools;;Scripts o consultas propias||In-house scripts or queries;;Hojas de cálculo||Spreadsheets;;Ninguno de estos||None of these","other":1,"h":"Ejemplos, no es una lista completa.||Examples; not a complete list."},{"k":"gr","id":"B12","t":"Tu experiencia con cada proveedor cloud||Your experience with each cloud provider","req":1,"r":"Amazon Web Services (AWS)||Amazon Web Services (AWS);;Microsoft Azure||Microsoft Azure;;Google Cloud||Google Cloud","c":"Lo uso en producción||Use it in production;;Lo he usado en laboratorio o proyecto||Used it in a lab or project;;Lo he estudiado (cursos o teoría)||Studied it (courses or theory);;No estoy familiarizado/a||Not familiar"},{"k":"gr","id":"B13","t":"Tu experiencia práctica con estos temas cloud (si no aplica, elige la última columna)||Your hands-on experience with these cloud topics (if not applicable, choose the last column)","r":"IAM, roles, permisos y mínimo privilegio||IAM, roles, permissions and least privilege;;Redes y reglas de acceso (p. ej., security groups)||Networking and access rules (e.g., security groups);;Almacenamiento y datos sensibles||Storage and sensitive data;;Vulnerabilidades y malas configuraciones en cloud||Cloud vulnerabilities and misconfigurations;;Servicios nativos de seguridad del proveedor||Provider-native security services;;Entornos multi-cloud||Multi-cloud environments;;Rutas de ataque en cloud||Cloud attack paths","c":"Lo trabajo en producción||Work with it in production;;Lo he practicado en laboratorio||Practiced it in a lab;;Lo he estudiado||Studied it;;No lo he trabajado||Have not worked with it"}]},{"key":"S4","t":"Tu trabajo hoy||Your work today","d":"Responde pensando en situaciones reales, sin datos confidenciales.||Answer thinking of real situations, without confidential data.","q":[{"k":"mc","id":"B15","t":"Piensa en los últimos 6 meses. ¿Cuál fue la situación más reciente en la que tuviste que decidir qué hallazgo de seguridad investigar o corregir primero?||Think of the last 6 months. What was the most recent situation in which you had to decide which security finding to investigate or fix first?","o":"Una alerta o incidente de seguridad||A security alert or incident;;El resultado de un escaneo de vulnerabilidades||A vulnerability scan result;;Un hallazgo de auditoría o prueba de penetración||An audit or penetration test finding;;Una revisión de configuración o postura en la nube||A cloud configuration or posture review;;Una solicitud de otra área o de la dirección||A request from another team or management;;No he tenido una situación así en los últimos 6 meses||I have not had such a situation in the last 6 months","other":1,"req":1},{"k":"mc","id":"B17","t":"Para esa situación, ¿cuánto tiempo pasó desde que apareció el hallazgo hasta tener una decisión clara?||For that situation, how long passed from the finding appearing to a clear decision?","o":"Menos de 15 min||Under 15 min;;15–60 min||15–60 min;;1–4 h||1–4 h;;4–8 h (una jornada)||4–8 h (a workday);;1–3 días||1–3 days;;Más de 3 días||More than 3 days;;No lo recuerdo / no aplica||I don't remember / not applicable","req":1},{"k":"gr","id":"B18","t":"¿Con qué frecuencia te ocurre cada situación en tu trabajo?||How often does each situation happen in your work?","req":1,"r":"Cambiar entre varias consolas o herramientas para investigar un mismo caso||Switching between several consoles or tools to investigate one case;;Correlacionar manualmente hallazgos de distintas fuentes||Manually correlating findings from different sources;;Decidir qué vulnerabilidades corregir primero cuando hay un volumen muy alto||Deciding which vulnerabilities to fix first when volume is very high;;Determinar si un hallazgo es realmente explotable o alcanzable en mi entorno||Determining whether a finding is really exploitable or reachable in my environment;;Entender relaciones entre recursos cloud, identidades y permisos||Understanding relationships between cloud resources, identities and permissions;;Explicar a otras personas el impacto de negocio de un hallazgo||Explaining the business impact of a finding to others;;Recibir alertas en exceso o de baja calidad (falsos positivos)||Receiving excessive or low-quality alerts (false positives);;No tener personal o presupuesto para atender los hallazgos||Lacking staff or budget to address findings;;Usar herramientas que no se integran entre sí||Using tools that do not integrate with each other;;Confirmar que una corrección realmente eliminó el riesgo||Confirming that a fix really removed the risk","c":"Todos los días||Every day;;Semanalmente||Weekly;;Mensualmente||Monthly;;Algunas veces al año||A few times a year;;Nunca||Never;;No aplica a mi rol||Not applicable to my role"},{"k":"mc","id":"B19","t":"De las situaciones anteriores, ¿cuál te consume más tiempo?||Of the situations above, which one consumes the most of your time?","o":"Cambiar entre consolas o herramientas||Switching between consoles or tools;;Correlacionar hallazgos manualmente||Manually correlating findings;;Priorizar vulnerabilidades por volumen||Prioritizing vulnerabilities due to volume;;Saber si algo es explotable o alcanzable||Knowing whether something is exploitable or reachable;;Entender relaciones cloud-identidades-permisos||Understanding cloud-identity-permission relationships;;Explicar impacto de negocio||Explaining business impact;;Alertas en exceso o falsos positivos||Excess alerts or false positives;;Falta de personal o presupuesto||Lack of staff or budget;;Falta de integración entre herramientas||Lack of integration between tools;;Confirmar que una corrección funcionó||Confirming that a fix worked;;Ninguna destaca||None stands out","other":1},{"k":"mc","id":"B20","t":"Para esa situación, ¿cuántas horas por semana dedicas, aproximadamente?||For that situation, roughly how many hours per week do you spend?","o":"Menos de 1||Less than 1;;1–3||1–3;;4–8||4–8;;9–15||9–15;;Más de 15||More than 15;;No sé||Don't know"},{"k":"cb","id":"B21","t":"¿Qué consecuencias ha tenido? (marca todas las que apliquen)||What consequences has it had? (select all that apply)","o":"Demoras en corregir||Delays in fixing;;Riesgos detectados tarde||Risks detected late;;Retrabajo o esfuerzo duplicado||Rework or duplicated effort;;Desgaste o rotación del equipo||Team burnout or turnover;;Costos adicionales en herramientas o consultoría||Extra tooling or consulting costs;;Hallazgos sin atender||Findings left unaddressed;;Hallazgos críticos que pasaron inadvertidos||Critical findings that went unnoticed;;No ha habido consecuencias importantes||No significant consequences;;No sé||Don't know","other":1},{"k":"cb","id":"B22","t":"¿Cómo lo manejas hoy? (marca todas las que apliquen)||How do you handle it today? (select all that apply)","o":"Funciones de mis plataformas actuales||Features of my current platforms;;Herramienta comercial específica||A specific commercial tool;;Herramientas open source||Open-source tools;;Scripts o consultas propias||In-house scripts or queries;;Hojas de cálculo o documentos||Spreadsheets or documents;;Reuniones o consultas a otras personas||Meetings or asking other people;;Proceso manual repetido||A repeated manual process;;No hay solución; lo toleramos||No solution; we live with it","other":1},{"k":"pg","id":"B23","t":"¿Hay otro problema de seguridad que te consuma tiempo y no apareció aquí? (opcional)||Is there another security problem that takes your time and did not appear here? (optional)"}]},{"key":"S5","t":"Tu rol||Your role","d":"Esto nos permite mostrarte las preguntas más relevantes.||This lets us show you the most relevant questions.","q":[{"k":"mc","id":"B04","t":"¿Cuál describe mejor tu rol principal actual?||Which best describes your current primary role?","o":"SOC / Blue Team||SOC / Blue Team;;Respuesta a incidentes / DFIR||Incident response / DFIR;;Threat hunting / inteligencia de amenazas||Threat hunting / threat intelligence;;Gestión de vulnerabilidades||Vulnerability management;;Seguridad cloud||Cloud security;;Ingeniería de seguridad||Security engineering;;Arquitectura de seguridad||Security architecture;;Pentesting / hacking ético||Penetration testing / ethical hacking;;Red Team / seguridad ofensiva||Red team / offensive security;;DevSecOps / seguridad de aplicaciones||DevSecOps / application security;;GRC / ISO 27001 / gestión de seguridad de la información||GRC / ISO 27001 / information security management;;Gerencia de seguridad / CISO||Security management / CISO;;Operaciones TI / NOC / infraestructura||IT operations / NOC / infrastructure;;Otro||Other;;No estoy seguro/a||Not sure","req":1,"go":{"0":"MD","1":"MD","2":"MD","3":"MV","4":"MC","5":"MC","6":"MC","7":"MO","8":"MO","9":"S6","10":"MG","11":"MG","12":"S6","13":"S6","14":"S6"}}]},{"key":"MD","t":"Operación defensiva||Defensive operations","next":"S6","q":[{"k":"mc","id":"B26","t":"¿Cuántas alertas revisas personalmente en un día laboral típico?||How many alerts do you personally review on a typical workday?","o":"Menos de 10||Fewer than 10;;10–50||10–50;;51–200||51–200;;201–1.000||201–1,000;;Más de 1.000||More than 1,000;;Varía demasiado / no lo sé||Varies too much / don't know;;No aplica||Not applicable","req":1},{"k":"mc","id":"B27","t":"De las alertas que revisas, ¿qué proporción suele ser falso positivo o no accionable?||Of the alerts you review, what share is usually a false positive or not actionable?","o":"Menos del 10%||Under 10%;;10–25%||10–25%;;26–50%||26–50%;;51–75%||51–75%;;Más del 75%||Over 75%;;No lo mido ni lo sé||I don't measure it or don't know","req":1},{"k":"mc","id":"B28","t":"Para investigar un caso típico, ¿a cuántas herramientas o consolas distintas accedes?||To investigate a typical case, how many different tools or consoles do you access?","o":"1||1;;2–3||2–3;;4–5||4–5;;6 o más||6 or more;;Varía mucho||Varies a lot;;No aplica||Not applicable","req":1},{"k":"cb","id":"B29","t":"¿Qué información tienes que buscar manualmente fuera de la alerta? (marca todas las que apliquen)||What information do you have to look up manually outside the alert? (select all that apply)","o":"Dueño del activo||Asset owner;;Criticidad del activo||Asset criticality;;Si está expuesto a Internet||Whether it is exposed to the Internet;;Vulnerabilidades conocidas del activo||Known vulnerabilities of the asset;;Identidades o permisos asociados||Associated identities or permissions;;Qué datos sensibles hay en el recurso||What sensitive data the resource holds;;Actividad previa relacionada||Related prior activity;;Cambios recientes de configuración||Recent configuration changes;;Ninguna; la alerta ya incluye lo necesario||None; the alert already includes what I need","other":1},{"k":"mc","id":"B30","t":"¿Tu equipo mide el tiempo medio de detección (MTTD) y de respuesta (MTTR)?||Does your team measure mean time to detect (MTTD) and respond (MTTR)?","o":"Medimos ambos||We measure both;;Solo MTTR||MTTR only;;Solo MTTD||MTTD only;;No medimos ninguno||We measure neither;;No sé||Don't know","req":1},{"k":"cb","id":"B32","t":"Cuando necesitas saber qué más podría alcanzar un activo comprometido, ¿cómo lo determinas? (marca todas las que apliquen)||When you need to know what else a compromised asset could reach, how do you determine it? (select all that apply)","o":"Consultas manuales en SIEM o logs||Manual SIEM or log queries;;Consola del proveedor cloud||Cloud provider console;;Inventario de activos o CMDB||Asset inventory or CMDB;;Pregunto a otros equipos||Ask other teams;;Herramienta de grafos o de rutas de ataque||Graph or attack-path tool;;Diagramas de arquitectura||Architecture diagrams;;No suele ser posible determinarlo con precisión||It is usually not possible to determine precisely;;No lo hago en mi rol||I don't do this in my role","other":1},{"k":"cb","id":"B33","t":"Después de aplicar una corrección, ¿cómo se confirma que el riesgo bajó? (marca todas las que apliquen)||After a fix is applied, how is it confirmed that risk went down? (select all that apply)","o":"Re-escaneo||Re-scan;;Revisión manual de configuración||Manual configuration review;;Prueba ofensiva o retest||Offensive test or retest;;El ticket se cierra al aplicar el cambio||The ticket is closed when the change is applied;;No se verifica de forma sistemática||It is not systematically verified;;No sé||Don't know","other":1}]},{"key":"MV","t":"Gestión de vulnerabilidades||Vulnerability management","next":"S6","q":[{"k":"mc","id":"B34","t":"Aproximadamente, ¿cuántas vulnerabilidades abiertas hay en el alcance de tu trabajo?||Roughly how many open vulnerabilities are in the scope of your work?","o":"Menos de 100||Fewer than 100;;100–1.000||100–1,000;;1.001–10.000||1,001–10,000;;10.001–100.000||10,001–100,000;;Más de 100.000||More than 100,000;;No sé||Don't know","req":1},{"k":"cb","id":"B35","t":"¿Qué criterios usas hoy para decidir qué corregir primero? (marca todos los que apliquen)||Which criteria do you use today to decide what to fix first? (select all that apply)","o":"Puntaje CVSS||CVSS score;;EPSS||EPSS;;Catálogo de vulnerabilidades explotadas conocidas (p. ej., CISA KEV)||Known exploited vulnerabilities catalog (e.g., CISA KEV);;Exposición a Internet||Internet exposure;;Criticidad del activo para el negocio||Business criticality of the asset;;Controles compensatorios existentes||Existing compensating controls;;Si hay un camino real hasta el activo||Whether there is a real path to the asset;;Inteligencia de amenazas||Threat intelligence;;Plazos (SLA) o políticas de cumplimiento||SLAs or compliance policies;;Decisión del dueño del sistema||System owner decision;;No hay un criterio definido||There is no defined criterion","other":1,"req":1},{"k":"mc","id":"B36","t":"En los últimos 6 meses, ¿con qué frecuencia cambiaste la prioridad del escáner o del CVSS tras revisar el contexto del activo?||In the last 6 months, how often did you change the scanner or CVSS priority after reviewing the asset context?","o":"Nunca||Never;;1–2 veces||1–2 times;;Varias veces||Several times;;Casi siempre||Almost always;;No lo he medido ni lo recuerdo||I haven't measured it / don't remember"},{"k":"cb","id":"B37","t":"¿Qué obstáculos frenan la corrección de vulnerabilidades? (marca todos los que apliquen)||What obstacles slow down vulnerability remediation? (select all that apply)","o":"Falta de contexto para convencer a los dueños de los sistemas||Lack of context to convince system owners;;Ventanas de cambio limitadas||Limited change windows;;Desacuerdo sobre prioridades||Disagreement on priorities;;Falta de personal||Lack of staff;;Los parches pueden romper sistemas||Patches may break systems;;No se sabe quién es el dueño del activo||Asset owner is unknown;;Ninguno significativo||None significant","other":1}]},{"key":"MC","t":"Seguridad cloud||Cloud security","next":"S6","q":[{"k":"mc","id":"B38","t":"Aproximadamente, ¿cuántos hallazgos de seguridad abiertos (postura, identidades, exposición) hay en el entorno cloud que gestionas?||Roughly how many open security findings (posture, identities, exposure) are in the cloud environment you manage?","o":"Menos de 50||Fewer than 50;;50–500||50–500;;501–5.000||501–5,000;;Más de 5.000||More than 5,000;;No sé / no los cuento||Don't know / I don't count them","req":1},{"k":"cb","id":"B39","t":"¿Cómo identificas identidades con permisos excesivos y recursos expuestos? (marca todas las que apliquen)||How do you identify over-privileged identities and exposed resources? (select all that apply)","o":"Servicios nativos del proveedor (p. ej., IAM Access Analyzer)||Provider-native services (e.g., IAM Access Analyzer);;Plataforma CSPM o CNAPP||CSPM or CNAPP platform;;Scripts o consultas propias||In-house scripts or queries;;Revisiones manuales periódicas||Periodic manual reviews;;Herramientas open source||Open-source tools;;Auditorías externas||External audits;;No lo hago de forma sistemática||I don't do it systematically","other":1,"req":1},{"k":"mc","id":"B40","t":"¿Con qué frecuencia se revisan esos permisos y exposiciones?||How often are those permissions and exposures reviewed?","o":"Continuamente (automatizado)||Continuously (automated);;Semanal||Weekly;;Mensual||Monthly;;Trimestral o menos||Quarterly or less;;Solo ante incidentes o auditorías||Only after incidents or audits;;Nunca||Never"},{"k":"mc","id":"B41","t":"¿Qué es lo más difícil de entender la exposición real en cloud?||What is hardest about understanding real exposure in the cloud?","o":"La relación entre identidades y recursos||The relationship between identities and resources;;Saber qué es alcanzable desde Internet||Knowing what is reachable from the Internet;;Saber dónde hay datos sensibles||Knowing where sensitive data is;;Gestionar muchas cuentas o proveedores||Managing many accounts or providers;;Interpretar hallazgos de distintas herramientas||Interpreting findings from different tools;;Ninguno es difícil||None is difficult","req":1,"other":1}]},{"key":"MO","t":"Seguridad ofensiva||Offensive security","next":"S6","q":[{"k":"cb","id":"B42","t":"¿A qué actividades ofensivas dedicas más tiempo? (marca todas las que apliquen)||Which offensive activities take most of your time? (select all that apply)","o":"Pentesting web o móvil||Web or mobile pentesting;;Pentesting de infraestructura o redes||Infrastructure or network pentesting;;Pentesting cloud||Cloud pentesting;;Red team||Red teaming;;Directorio activo e identidad||Active Directory and identity;;Ingeniería social||Social engineering;;Investigación de vulnerabilidades||Vulnerability research;;CTF o laboratorios||CTFs or labs","other":1,"req":1},{"k":"cb","id":"B43","t":"Para descubrir relaciones entre vulnerabilidades, identidades, permisos y activos, ¿qué usas? (marca todo lo que aplique)||To discover relationships between vulnerabilities, identities, permissions and assets, what do you use? (select all that apply)","o":"Notas y análisis manual||Notes and manual analysis;;BloodHound u otra herramienta de grafos||BloodHound or another graph tool;;Cartography o similar||Cartography or similar;;Scripts propios||In-house scripts;;Diagramas (draw.io, Miro…)||Diagrams (draw.io, Miro…);;Herramienta comercial de rutas de ataque||Commercial attack-path tool;;Herramientas nativas del proveedor cloud||Cloud-provider native tools;;Ninguna||None","other":1,"req":1},{"k":"cb","id":"B44","t":"¿Cómo documentas las rutas de ataque encontradas? (marca todas las que apliquen)||How do you document the attack paths you find? (select all that apply)","o":"Informe narrativo||Narrative report;;Diagramas||Diagrams;;Capturas de pantalla||Screenshots;;Exportación de una herramienta||Tool export;;Tickets||Tickets;;Comunicación verbal||Verbal communication","other":1,"req":1},{"k":"mc","id":"B45","t":"En un proyecto típico, ¿qué parte de tu tiempo dedicas a correlacionar y documentar hallazgos?||On a typical project, how much of your time goes to correlating and documenting findings?","o":"Menos del 10%||Under 10%;;10–25%||10–25%;;26–50%||26–50%;;Más del 50%||Over 50%;;No sé||Don't know"},{"k":"cb","id":"B46","t":"¿Qué dificultades encuentras al comunicar hallazgos a equipos defensivos? (marca todas las que apliquen)||What difficulties do you face when communicating findings to defensive teams? (select all that apply)","o":"Falta de contexto sobre el impacto de negocio||Lack of business impact context;;No pueden reproducir el hallazgo||They cannot reproduce the finding;;Desacuerdo sobre la severidad||Disagreement on severity;;No compartimos una herramienta común||We don't share a common tool;;Los hallazgos se cierran sin verificación||Findings are closed without verification;;Ninguna dificultad||No difficulty;;No comunico a equipos defensivos||I don't communicate with defensive teams","other":1},{"k":"pg","id":"B48","t":"¿Cuál es la mayor limitación de tu flujo de trabajo actual? (opcional)||What is the biggest limitation of your current workflow? (optional)"}]},{"key":"MG","t":"Gobierno y gestión||Governance and management","next":"S6","q":[{"k":"cb","id":"B49","t":"¿Cómo reportas hoy el estado del riesgo a la dirección u otras áreas? (marca todas las que apliquen)||How do you report risk status today to management or other teams? (select all that apply)","o":"Informes manuales||Manual reports;;Dashboards de herramientas||Tool dashboards;;Hojas de cálculo||Spreadsheets;;Reuniones periódicas||Periodic meetings;;Métricas (KPIs) definidas||Defined metrics (KPIs);;No reporto a la dirección||I don't report to management","other":1,"req":1},{"k":"cb","id":"B50","t":"¿Cómo demuestras que una corrección redujo el riesgo? (marca todas las que apliquen)||How do you show that a fix reduced risk? (select all that apply)","o":"Evidencia de un escaneo posterior||Evidence from a later scan;;Cierre del ticket||Ticket closure;;Informe del dueño del sistema||System owner report;;Retest ofensivo||Offensive retest;;Métricas antes/después||Before/after metrics;;No suelo demostrarlo||I usually don't show it","other":1,"req":1},{"k":"mc","id":"B51","t":"¿Qué es lo más difícil al comunicar el impacto de negocio de un hallazgo?||What is hardest when communicating the business impact of a finding?","o":"Traducir lo técnico a términos de negocio||Translating technical findings into business terms;;Falta de datos sobre la criticidad de los activos||Lack of data on asset criticality;;Falta de contexto sobre cómo se combinan los hallazgos||Lack of context on how findings combine;;Desacuerdo de prioridades entre áreas||Disagreement on priorities between teams;;Falta de métricas confiables||Lack of reliable metrics;;No me resulta difícil||It is not difficult for me","req":1,"other":1}]},{"key":"S6","t":"Una situación de ejemplo||An example situation","next":"S7","d":"Antes de mostrarte cualquier idea, queremos saber cómo lo harías hoy.||Before showing you any idea, we want to know how you would do it today.","q":[{"k":"info","id":"B52i","t":"Imagina esta situación en una cuenta cloud||Imagine this situation in a cloud account","h":"Una carga de trabajo es accesible desde Internet, tiene una vulnerabilidad crítica conocida, usa una identidad con permisos amplios, y esa identidad puede leer un recurso de almacenamiento con datos sensibles. Cada hallazgo aparece en una herramienta distinta.||A workload is reachable from the Internet, has a known critical vulnerability, uses an identity with broad permissions, and that identity can read a storage resource holding sensitive data. Each finding appears in a different tool."},{"k":"mc","id":"B52","t":"En los últimos 12 meses, ¿investigaste o corregiste una situación parecida, donde varios hallazgos de distintas herramientas formaban juntos un camino de riesgo?||In the last 12 months, did you investigate or fix a similar situation, where several findings from different tools together formed a risk path?","o":"Sí, varias veces||Yes, several times;;Sí, una vez||Yes, once;;No, que yo sepa||No, not that I know of;;No sé si ocurrió||I don't know if it happened","req":1},{"k":"pg","id":"B53","t":"Si algo así ocurriera en un entorno que conoces, ¿cómo lo investigarías hoy? (sin datos confidenciales)||If this happened in an environment you know, how would you investigate it today? (no confidential data)"},{"k":"mc","id":"B54","t":"Con las herramientas que usas hoy, ¿qué tan probable es que lo identificaras como una cadena de riesgo y no como hallazgos aislados?||With the tools you use today, how likely is it that you would identify it as a risk chain rather than isolated findings?","o":"Muy improbable||Very unlikely;;Improbable||Unlikely;;Ni improbable ni probable||Neither unlikely nor likely;;Probable||Likely;;Muy probable||Very likely;;No sé / No aplica||Don't know / Not applicable","req":1},{"k":"mc","id":"B55","t":"¿Cuánto tiempo necesitarías para confirmar el recorrido completo?||How long would you need to confirm the full path?","o":"Menos de 15 min||Under 15 min;;15–60 min||15–60 min;;1–4 h||1–4 h;;Más de 4 h hasta 1 día||More than 4 h up to 1 day;;Más de 1 día||More than 1 day;;No podría confirmarlo con mis herramientas actuales||I could not confirm it with my current tools;;No sé||Don't know","req":1},{"k":"cb","id":"B56","t":"¿Qué necesitarías ver para confiar en que esa cadena es real? (hasta 3)||What would you need to see to trust that the chain is real? (up to 3)","o":"Los datos de origen de cada paso||Source data for each step;;La configuración exacta (regla de red, política IAM)||The exact configuration (network rule, IAM policy);;Cuándo se verificó por última vez||When it was last verified;;Confirmación de que es explotable||Confirmation that it is exploitable;;Una consulta que pueda reproducir||A query I can reproduce;;Revisión de otra persona||Review by another person;;Nada; confiaría sin más||Nothing; I would just trust it","max":3,"other":1,"req":1}]},{"key":"SS","t":"Para estudiantes y personas en formación||For students and people in training","q":[{"k":"gr","id":"B57a","t":"Tu experiencia con estas herramientas y temas||Your experience with these tools and topics","req":1,"r":"SIEM||SIEM;;EDR/XDR||EDR/XDR;;Escáneres de vulnerabilidades||Vulnerability scanners;;CSPM/CNAPP||CSPM/CNAPP;;IAM y permisos cloud||IAM and cloud permissions;;AWS||AWS;;Azure||Azure;;Google Cloud||Google Cloud","c":"Lo he usado en laboratorio o proyecto||Used it in a lab or project;;Lo he estudiado||Studied it;;Solo lo conozco de nombre||Only know it by name;;No lo conozco||Not familiar"},{"k":"cb","id":"B24","t":"¿Qué temas te resultan más difíciles de entender o practicar? (hasta 3)||Which topics are hardest for you to understand or practice? (up to 3)","o":"Cómo se conectan varios hallazgos en un ataque real||How several findings connect in a real attack;;Identidades y permisos en la nube (IAM)||Identities and permissions in the cloud (IAM);;Redes y exposición a Internet||Networking and Internet exposure;;Gestión y priorización de vulnerabilidades||Vulnerability management and prioritization;;Detección y análisis de alertas (SIEM, EDR)||Alert detection and analysis (SIEM, EDR);;Respuesta a incidentes||Incident response;;Pruebas ofensivas||Offensive testing;;Cumplimiento y gobierno||Compliance and governance;;Acceso a herramientas comerciales (costo o licencias)||Access to commercial tools (cost or licenses);;Ninguno en particular||None in particular","max":3,"other":1,"req":1},{"k":"cb","id":"B25","t":"¿Qué recursos usas para practicar? (marca todos los que apliquen)||What resources do you use to practice? (select all that apply)","o":"Laboratorios propios en la nube (cuenta gratuita)||Own cloud labs (free account);;Plataformas de prácticas (p. ej., TryHackMe, HackTheBox)||Practice platforms (e.g., TryHackMe, HackTheBox);;Laboratorios de mi institución||My institution's labs;;Herramientas open source en local||Open-source tools locally;;Versiones de prueba de productos comerciales||Trial versions of commercial products;;No practico||I don't practice","other":1},{"k":"info","id":"B57i","t":"Situación de ejemplo||Example situation","h":"Un servidor expuesto a Internet con una vulnerabilidad crítica usa una identidad con permisos amplios que puede leer datos sensibles. Cada hallazgo aparece en una herramienta distinta.||A server exposed to the Internet with a critical vulnerability uses an identity with broad permissions that can read sensitive data. Each finding appears in a different tool."},{"k":"pg","id":"B57","t":"En un laboratorio, ¿cómo intentarías conectar esos hallazgos para entender el riesgo? (opcional)||In a lab, how would you try to connect those findings to understand the risk? (optional)"}]},{"key":"S7","t":"IA y automatización||AI and automation","q":[{"k":"cb","id":"B58","t":"¿Cómo usas la IA en tu trabajo o estudio de seguridad? (marca todas las que apliquen)||How do you use AI in your security work or study? (select all that apply)","o":"Asistente de IA de uso general||General-purpose AI assistant;;Copiloto integrado en un producto de seguridad||Copilot built into a security product;;Scripts propios con modelos de lenguaje||In-house scripts with language models;;Agentes automatizados||Automated agents;;La probé y la dejé||I tried it and stopped;;No la uso||I don't use it;;Mi organización la prohíbe o restringe||My organization prohibits or restricts it;;Prefiero no usarla||I prefer not to use it","other":1,"req":1},{"k":"cb","id":"B60","t":"¿Cuáles son tus principales preocupaciones sobre la IA en seguridad? (hasta 3)||What are your main concerns about AI in security? (up to 3)","o":"Respuestas inexactas||Inaccurate answers;;Fuga de datos o privacidad||Data leakage or privacy;;Falta de explicabilidad||Lack of explainability;;Acciones no autorizadas||Unauthorized actions;;Responsabilidad ante errores||Accountability for errors;;Costo||Cost;;Cumplimiento normativo||Regulatory compliance;;Dependencia de un proveedor||Vendor dependence;;Pérdida de habilidades||Skill erosion;;Ninguna preocupación||No concerns","max":3,"other":1,"req":1},{"k":"gr","id":"B61","t":"Para cada nivel de acción de un asistente de IA sobre datos de seguridad, ¿qué postura tendrías?||For each level of action by an AI assistant on security data, what would your stance be?","req":1,"r":"Leer datos de seguridad en modo solo lectura||Read security data in read-only mode;;Sugerir pasos de corrección||Suggest remediation steps;;Ejecutar cambios de bajo riesgo tras aprobación humana||Execute low-risk changes after human approval;;Ejecutar cambios sin aprobación en casos definidos||Execute changes without approval in defined cases","c":"No lo aceptaría||I would not accept it;;Solo con condiciones estrictas||Only with strict conditions;;Aceptable||Acceptable;;Preferible||Preferable;;No sé||Don't know"},{"k":"cb","id":"B62","t":"¿Qué necesitarías para confiar en una recomendación de IA? (hasta 3)||What would you need to trust an AI recommendation? (up to 3)","o":"Enlaces a la evidencia||Links to evidence;;Razonamiento paso a paso||Step-by-step reasoning;;Nivel de confianza||Confidence level;;Registro de auditoría||Audit trail;;Poder reproducir el resultado||Being able to reproduce the result;;Aprobación humana||Human approval;;Probarla primero en un entorno de pruebas||Testing it first in a test environment;;Despliegue local o modelo propio||Local deployment or own model;;Certificaciones del proveedor||Vendor certifications;;No usaría IA para esto||I would not use AI for this","max":3,"other":1,"req":1}]},{"key":"S8a","t":"Una idea en evaluación||An idea under evaluation","d":"Ahora te presentamos una idea en etapa temprana. NO es un producto comercial disponible: existe solo un prototipo limitado sobre un escenario controlado de AWS. La idea es una plataforma que se conectaría a las herramientas de seguridad que ya usas para relacionar hallazgos (activos, identidades, permisos, vulnerabilidades, exposición y datos), mostrar posibles rutas de ataque con la evidencia de cada paso y apoyar la priorización y la verificación de correcciones. No reemplazaría tu SIEM, EDR ni escáner. Puede que no te resulte útil: tu opinión crítica es valiosa.||Here is an early-stage idea. It is NOT a commercially available product: only a limited prototype exists, built on a controlled AWS scenario. The idea is a platform that would connect to the security tools you already use to relate findings (assets, identities, permissions, vulnerabilities, exposure and data), show possible attack paths with evidence for each step, and support prioritization and verification of fixes. It would not replace your SIEM, EDR or scanner. It may not be useful to you: your critical opinion is valuable.","q":[{"k":"mc","id":"B64","t":"¿Qué tan relevante es, en tu trabajo o estudio, el problema que esta idea intenta resolver (relacionar hallazgos dispersos para saber qué riesgos importan más)?||How relevant, in your work or study, is the problem this idea tries to solve (relating scattered findings to know which risks matter most)?","o":"Nada relevante||Not at all relevant;;Poco relevante||Slightly relevant;;Moderadamente relevante||Moderately relevant;;Bastante relevante||Very relevant;;Extremadamente relevante||Extremely relevant;;No es un problema para mí||It is not a problem for me;;No sé / No aplica||Don't know / Not applicable","req":1,"go":{"0":"S8c","1":"S8c","5":"S8c"}}]},{"key":"S8b","t":"Sobre la idea||About the idea","d":"Si algo no aplica a tu caso, elige la opción correspondiente o déjalo en blanco.||If something does not apply to you, choose the matching option or leave it blank.","q":[{"k":"mc","id":"B65","t":"¿Qué tan bien se resuelve hoy ese problema con lo que ya tienes?||How well is that problem solved today by what you already have?","o":"Por completo||Completely;;En su mayor parte||Mostly;;Parcialmente||Partially;;Poco||Barely;;No se resuelve||Not solved;;No sé||Don't know;;No aplica (soy estudiante)||Not applicable (I am a student)"},{"k":"cb","id":"B66","t":"Hoy, para ese problema, ¿qué usas principalmente? (marca todas las que apliquen)||Today, for that problem, what do you mainly use? (select all that apply)","o":"Funciones de mis plataformas actuales (SIEM, CNAPP, escáner)||Features of my current platforms (SIEM, CNAPP, scanner);;Herramientas open source||Open-source tools;;Scripts o consultas propias||In-house scripts or queries;;Hojas de cálculo y trabajo manual||Spreadsheets and manual work;;Servicios o consultoría externa||External services or consulting;;Nada específico||Nothing specific","other":1},{"k":"mc","id":"B67","t":"Si esta idea funcionara, ¿qué flujo de trabajo te gustaría mejorar primero?||If this idea worked, which workflow would you most want to improve first?","o":"Triage de alertas||Alert triage;;Priorización de vulnerabilidades||Vulnerability prioritization;;Investigación de exposición en cloud||Cloud exposure investigation;;Documentación y comunicación de rutas de ataque||Documenting and communicating attack paths;;Reportes a la dirección||Reporting to management;;Verificación de correcciones||Verifying fixes;;Auditorías||Audits;;Ninguno; esta idea no mejoraría mi trabajo||None; this idea would not improve my work","req":1,"other":1},{"k":"pg","id":"B68","t":"¿Qué haría que esta idea te resultara innecesaria? (opcional)||What would make this idea unnecessary for you? (optional)"},{"k":"cb","id":"B69","t":"Si algo así existiera, ¿qué integraciones serían imprescindibles para evaluarlo? (hasta 5; no implica que existan hoy)||If something like this existed, which integrations would be essential to evaluate it? (up to 5; this does not imply they exist today)","o":"AWS||AWS;;Azure||Azure;;Google Cloud||Google Cloud;;Microsoft Sentinel o Defender||Microsoft Sentinel or Defender;;Splunk||Splunk;;CrowdStrike||CrowdStrike;;Tenable, Qualys o Rapid7||Tenable, Qualys or Rapid7;;Wiz, Orca o Prisma Cloud||Wiz, Orca or Prisma Cloud;;Jira o ServiceNow||Jira or ServiceNow;;Slack o Teams||Slack or Teams;;Proveedor de identidad (Okta, Entra ID)||Identity provider (Okta, Entra ID);;GitHub o GitLab / CI-CD||GitHub or GitLab / CI-CD;;Kubernetes||Kubernetes;;Importación por API o CSV||API or CSV import;;Ninguna es imprescindible||None is essential","max":5,"other":1},{"k":"cb","id":"B70","t":"¿Qué funciones serían más valiosas para ti? (hasta 3)||Which features would be most valuable to you? (up to 3)","o":"Mapa visual de rutas de ataque||Visual attack-path map;;Evidencia de cada paso||Evidence for each step;;Priorización según contexto||Context-based prioritization;;Consultas en lenguaje natural||Natural-language queries;;Recomendaciones de corrección||Remediation recommendations;;Verificación antes y después de corregir||Before/after verification of fixes;;Informes para la dirección||Management reports;;Alertas por email o chat||Email or chat alerts;;API||API","max":3,"other":1},{"k":"cb","id":"B71","t":"¿Qué preocupaciones de seguridad, privacidad o despliegue te impedirían adoptar algo así? (marca todas las que apliquen)||Which security, privacy or deployment concerns would keep you from adopting something like this? (select all that apply)","o":"Que los datos salgan de mi organización||Data leaving my organization;;Dar credenciales o acceso a mi cuenta cloud||Giving credentials or access to my cloud account;;Necesitar acceso de solo lectura||Needing read-only access;;Necesitar despliegue propio (self-hosted)||Needing self-hosted deployment;;Residencia de datos||Data residency;;Certificaciones del proveedor (p. ej., SOC 2, ISO 27001)||Vendor certifications (e.g., SOC 2, ISO 27001);;Confianza en un proveedor nuevo||Trust in a new vendor;;Esfuerzo de integración||Integration effort;;Costo||Cost;;Ninguna preocupación||No concerns","other":1},{"k":"pg","id":"B72","t":"¿Qué haría que la rechazaras de inmediato? (opcional)||What would make you reject it right away? (optional)"}]},{"key":"S8c","t":"Interés y rol en decisiones||Interest and role in decisions","q":[{"k":"mc","id":"B73","t":"Si algo así estuviera disponible, ¿cuál de estas acciones realizarías?||If something like this were available, which of these actions would you take?","o":"No me interesa||I'm not interested;;Ver una demostración||See a demo;;Probarlo con datos de laboratorio o sintéticos||Try it with lab or synthetic data;;Probarlo en un entorno de pruebas de mi organización||Try it in a test environment of my organization;;Participar en un piloto controlado con datos reales (sujeto a aprobación interna)||Join a controlled pilot with real data (subject to internal approval);;No puedo decidirlo, pero lo recomendaría a quien corresponda||I can't decide, but I would recommend it to the right person;;No sé||Don't know","req":1},{"k":"cb","id":"B74","t":"En tu organización, respecto a herramientas de seguridad, ¿cuál es tu papel? (marca todos los que apliquen)||In your organization, regarding security tools, what is your role? (select all that apply)","o":"Las uso||I use them;;Las evalúo técnicamente||I evaluate them technically;;Las recomiendo||I recommend them;;Apruebo o controlo el presupuesto||I approve or control the budget;;No participo en esas decisiones||I don't take part in those decisions;;No sé||Don't know"},{"k":"mc","id":"B75","t":"En los últimos 12 meses, ¿recomendaste, solicitaste o evaluaste formalmente la compra de una herramienta de seguridad?||In the last 12 months, did you recommend, request or formally evaluate buying a security tool?","o":"Sí, y se compró||Yes, and it was bought;;Sí, pero no se compró||Yes, but it was not bought;;Sí, sigue en proceso||Yes, still in progress;;No||No;;No sé / Prefiero no decir||Don't know / Prefer not to say"}]},{"key":"S9","t":"Cierre||Wrap-up","q":[{"k":"pg","id":"B76","t":"¿Algo más que quieras contarnos? (opcional)||Anything else you would like to tell us? (optional)"},{"k":"cb","id":"B77","t":"Opcional y por separado: ¿quieres participar en alguna actividad de seguimiento?||Optional and separate: would you like to join a follow-up activity?","o":"Una entrevista de 30 minutos sobre mi experiencia||A 30-minute interview about my experience;;Ver una demostración y dar mi opinión||See a demo and give feedback;;Participar en un piloto controlado||Take part in a controlled pilot;;Recibir los resultados del estudio||Receive the study results;;No, gracias||No, thank you"},{"k":"em","id":"B78","t":"Si marcaste alguna actividad (excepto \"No, gracias\"), deja tu correo. Se guarda aparte de tus respuestas y solo se usa para esta invitación.||If you selected an activity (except \"No, thank you\"), leave your email. It is stored separately from your answers and only used for this invitation."},{"k":"mc","id":"B79","t":"Idioma preferido para la actividad||Preferred language for the activity","o":"Español||Spanish;;Inglés||English;;Cualquiera||Either"}]}]};
+const CODE="B";
+/* Correo de contacto y dirección del receptor (Apps Script). Si SUBMIT_URL está vacío, la app solo guarda y permite descargar. */
+const CONTACT="andreabelen2003vg@gmail.com";
+const SUBMIT_URL="https://script.google.com/macros/s/AKfycbwgqB2XpSlzSvVel71571GdHGFINDSFtUDhJK6JAvHGr1g3I1azHQup1G52LW_aZJz-iA/exec";
+
+const T={
+ next:{es:'Siguiente',en:'Next'},back:{es:'Atrás',en:'Back'},submit:{es:'Enviar',en:'Submit'},
+ req:{es:'Esta pregunta es obligatoria.',en:'This question is required.'},
+ other:{es:'Otro:',en:'Other:'},
+ otherReq:{es:'Escribe tu respuesta en "Otro".',en:'Write your answer in "Other".'},
+ email:{es:'Revisa el formato del correo.',en:'Please check the email format.'},
+ choose:{es:'Elige una opción…',en:'Choose an option…'},
+ atMost:{es:'Selecciona como máximo ',en:'Select at most '},
+ gridRows:{es:'Responde todas las filas.',en:'Answer every row.'},
+ declined:{es:'Gracias por tu tiempo. No se guardó ninguna respuesta.',en:'Thank you for your time. No response was saved.'},
+ dlJson:{es:'Descargar mi respuesta (JSON)',en:'Download my response (JSON)'},
+ dlCsv:{es:'Descargar mi respuesta (CSV)',en:'Download my response (CSV)'},
+ again:{es:'Nueva respuesta',en:'New response'},
+ sendNote:{es:'Si recibiste este archivo del equipo de investigación, descarga tu respuesta y envíala a ',en:'If you received this file from the research team, download your response and send it to '},
+ localNote:{es:'Tu respuesta se guardó solo en este dispositivo.',en:'Your response was saved only on this device.'},
+ sending:{es:'Enviando tu respuesta…',en:'Sending your response…'},
+ sendOk:{es:'Tu respuesta fue enviada al equipo de investigación. ¡Gracias!',en:'Your response was sent to the research team. Thank you!'},
+ sendFail:{es:'No se pudo enviar ahora (¿sin conexión?). Quedó guardada en este dispositivo y se reenviará cuando abras esta encuesta con conexión.',en:'It could not be sent now (offline?). It is saved on this device and will be re-sent when you open this survey with a connection.'},
+ admin:{es:'Administración',en:'Administration'}
+};
+
+let lang=(function(){try{const s=localStorage.getItem('pacifics_lang');if(s==='es'||s==='en')return s}catch(e){}return (navigator.language||'es').toLowerCase().indexOf('es')===0?'es':'en'})();
+const t=k=>T[k][lang];
+function tx(s,l){const p=String(s).split('||');const v=l==='es'?p[0]:(p[1]!==undefined?p[1]:p[0]);return v.replace(/\{\{CONTACT\}\}/g,CONTACT)}
+function list(s,l){return String(s).split(';;').map(x=>tx(x,l))}
+
+const KEY={};DEF.sections.forEach((s,i)=>{KEY[s.key]=i});
+let idx=0,hist=[],answers={},view='survey',declined=false,lastRec=null,lastContact=null,nextBtn=null;
+const mem={};
+const K_R='pacifics_'+CODE+'_responses',K_C='pacifics_'+CODE+'_contacts';
+function load(k){if(mem[k])return mem[k];try{const v=localStorage.getItem(k);if(v){mem[k]=JSON.parse(v);return mem[k]}}catch(e){}mem[k]=[];return mem[k]}
+function save(k,v){mem[k]=v;try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+const K_S='pacifics_'+CODE+'_sent';
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+
+/* ---------- envío al receptor ---------- */
+function post(payload){
+ return fetch(SUBMIT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+}
+function pendingJobs(){
+ const S=new Set(load(K_S)),jobs=[];
+ load(K_R).forEach(r=>{if(!S.has(r.id))jobs.push({id:r.id,p:{survey:CODE,responses:[r],contacts:[]}})});
+ load(K_C).forEach(c=>{if(!S.has(c.id))jobs.push({id:c.id,p:{survey:CODE,responses:[],contacts:[c]}})});
+ return jobs;
+}
+let flushing=null;
+function flushPending(){
+ if(!SUBMIT_URL)return Promise.resolve({total:0,failed:0});
+ if(flushing)return flushing;
+ const jobs=pendingJobs();let failed=0;
+ flushing=jobs.reduce((chain,j)=>chain.then(()=>post(j.p).then(()=>{const a=load(K_S);a.push(j.id);save(K_S,a)}).catch(()=>{failed++})),Promise.resolve())
+  .then(()=>{flushing=null;return {total:jobs.length,failed:failed}});
+ return flushing;
+}
+function showStatus(res){const el=$('#sendstatus');if(el)el.textContent=res.failed?t('sendFail'):t('sendOk')}
+
+function h(tag,attrs,...kids){
+ const e=document.createElement(tag);
+ for(const k in (attrs||{})){const v=attrs[k];
+  if(k==='class')e.className=v;
+  else if(k.slice(0,2)==='on')e.addEventListener(k.slice(2),v);
+  else if(k==='disabled'||k==='checked')e[k]=!!v;
+  else if(v===true)e.setAttribute(k,'');
+  else if(v!==false&&v!=null)e.setAttribute(k,v);}
+ for(const c of kids.flat()){if(c==null||c===false)continue;e.append(c.nodeType?c:document.createTextNode(c))}
+ return e;
+}
+const $=s=>document.querySelector(s);
+
+/* ---------- render ---------- */
+function render(){
+ document.documentElement.lang=lang;
+ document.title=tx(DEF.title,lang);
+ const app=$('#app');app.replaceChildren();
+ if(location.hash==='#admin'){renderAdmin(app);return}
+ app.append(topbar());
+ if(view==='done'){renderDone(app)}else{renderSection(app)}
+ window.scrollTo(0,0);
+}
+function topbar(){
+ const pct=view==='done'?100:Math.min(95,Math.round(hist.length/Math.max(DEF.sections.length-1,1)*100));
+ const lb=l=>h('button',{type:'button','aria-pressed':String(lang===l),onclick:()=>{lang=l;try{localStorage.setItem('pacifics_lang',l)}catch(e){}render()}},l.toUpperCase());
+ return h('div',null,
+  h('div',{class:'top'},h('h1',null,tx(DEF.title,lang)),h('div',{class:'lang'},lb('es'),lb('en'))),
+  h('div',{class:'bar',role:'progressbar','aria-valuenow':String(pct),'aria-valuemin':'0','aria-valuemax':'100'},h('i',{style:'width:'+pct+'%'})));
+}
+function footer(){
+ return h('div',{class:'foot'});
+}
+function renderSection(app){
+ const sec=DEF.sections[idx];
+ const card=h('section',{class:'sec'});
+ if(idx===0){card.append(h('p',{class:'intro'},tx(DEF.desc,lang)))}
+ else{card.append(h('h2',null,tx(sec.t,lang)));if(sec.d)card.append(h('p',{class:'intro'},tx(sec.d,lang)))}
+ sec.q.forEach(q=>card.append(renderQ(q)));
+ nextBtn=h('button',{class:'btn',type:'button',onclick:goNext},t('next'));
+ card.append(h('div',{class:'nav'},h('button',{class:'btn ghost',type:'button',disabled:hist.length===0,onclick:goBack},t('back')),nextBtn));
+ app.append(card,footer());
+ refreshNav();
+}
+function refreshNav(){if(nextBtn)nextBtn.textContent=nextIdx(idx).submit?t('submit'):t('next')}
+function touch(q){const b=document.querySelector('[data-qid="'+q.id+'"]');if(b){b.classList.remove('bad');const e=b.querySelector('.err');if(e)e.textContent=''}refreshNav()}
+
+function renderQ(q){
+ const box=h('div',{class:'q','data-qid':q.id});
+ const title=tx(q.t,lang);
+ if(q.k==='info'){box.classList.add('info');box.append(h('h3',null,title));if(q.h)box.append(h('p',{class:'help'},tx(q.h,lang)));return box}
+ box.append(h('div',{class:'lbl',id:'l_'+q.id},title,q.req?h('span',{class:'star'},' *'):null));
+ if(q.h)box.append(h('p',{class:'help'},tx(q.h,lang)));
+ const fn={mc:qMC,ls:qLS,cb:qCB,tx:qText,em:qText,pg:qText,sc:qSC,gr:qGR}[q.k];
+ box.append(fn(q),h('div',{class:'err',role:'alert'}));
+ return box;
+}
+function qMC(q){
+ const L=list(q.o,lang),a=answers[q.id]||{};
+ const wrap=h('div',{class:'opts',role:'radiogroup','aria-labelledby':'l_'+q.id});
+ let otherIn=null,otherR=null;
+ L.forEach((lab,i)=>{
+  const r=h('input',{type:'radio',name:q.id,checked:a.i===i});
+  r.addEventListener('change',()=>{answers[q.id]={i:i,other:false,text:''};if(otherIn)otherIn.value='';touch(q)});
+  wrap.append(h('label',{class:'opt'},r,h('span',null,lab)));
+ });
+ if(q.other){
+  otherR=h('input',{type:'radio',name:q.id,checked:!!a.other});
+  otherIn=h('input',{type:'text',class:'oth','aria-label':t('other')});otherIn.value=a.text||'';
+  const set=()=>{answers[q.id]={i:null,other:true,text:otherIn.value};touch(q)};
+  otherR.addEventListener('change',set);
+  otherIn.addEventListener('input',()=>{otherR.checked=true;set()});
+  wrap.append(h('label',{class:'opt oo'},otherR,h('span',null,t('other')),otherIn));
+ }
+ return wrap;
+}
+function qLS(q){
+ const L=list(q.o,lang),a=answers[q.id]||{};
+ const s=h('select',{'aria-labelledby':'l_'+q.id},h('option',{value:''},t('choose')),L.map((x,i)=>h('option',{value:String(i)},x)));
+ s.value=a.i!=null?String(a.i):'';
+ s.addEventListener('change',()=>{answers[q.id]=s.value===''?{i:null,other:false,text:''}:{i:+s.value,other:false,text:''};touch(q)});
+ return s;
+}
+function cbCount(a){return (a.sel||[]).length+(a.other?1:0)}
+function qCB(q){
+ const L=list(q.o,lang);
+ const a=answers[q.id]=answers[q.id]||{sel:[],other:false,text:''};
+ const inputs=[];const wrap=h('div',{class:'opts'});
+ const applyMax=()=>{if(!q.max)return;const n=cbCount(a);inputs.forEach(x=>{if(!x.checked)x.disabled=n>=q.max;else x.disabled=false})};
+ L.forEach((lab,i)=>{
+  const c=h('input',{type:'checkbox',checked:a.sel.indexOf(i)>=0});
+  c.addEventListener('change',()=>{a.sel=c.checked?a.sel.concat([i]):a.sel.filter(x=>x!==i);applyMax();touch(q)});
+  inputs.push(c);wrap.append(h('label',{class:'opt'},c,h('span',null,lab)));
+ });
+ if(q.other){
+  const oc=h('input',{type:'checkbox',checked:!!a.other});
+  const oi=h('input',{type:'text',class:'oth','aria-label':t('other')});oi.value=a.text||'';
+  oc.addEventListener('change',()=>{a.other=oc.checked;if(!oc.checked){a.text='';oi.value=''}applyMax();touch(q)});
+  oi.addEventListener('input',()=>{a.text=oi.value;if(oi.value&&!oc.checked&&!oc.disabled){oc.checked=true;a.other=true;applyMax()}touch(q)});
+  inputs.push(oc);wrap.append(h('label',{class:'opt oo'},oc,h('span',null,t('other')),oi));
+ }
+ applyMax();
+ return wrap;
+}
+function qText(q){
+ const inp=q.k==='pg'?h('textarea',{rows:'4'}):h('input',{type:q.k==='em'?'email':'text'});
+ inp.value=answers[q.id]||'';inp.setAttribute('aria-labelledby','l_'+q.id);
+ inp.addEventListener('input',()=>{answers[q.id]=inp.value;touch(q)});
+ return inp;
+}
+function qSC(q){
+ const n=q.n||5,row=h('div',{class:'scale',role:'radiogroup','aria-labelledby':'l_'+q.id});
+ for(let v=1;v<=n;v++){
+  const r=h('input',{type:'radio',name:q.id,checked:answers[q.id]===v});
+  r.addEventListener('change',()=>{answers[q.id]=v;touch(q)});
+  row.append(h('label',{class:'sc'},h('span',null,String(v)),r));
+ }
+ return h('div',null,row,h('div',{class:'scl'},h('span',null,tx(q.lo,lang)),h('span',null,tx(q.hi,lang))));
+}
+function qGR(q){
+ const R=list(q.r,lang),C=list(q.c,lang);
+ const a=answers[q.id]=answers[q.id]||{};
+ const tb=h('table',{class:'grid'});
+ tb.append(h('thead',null,h('tr',null,h('th',null,''),C.map(c=>h('th',null,c)))));
+ const body=h('tbody');
+ R.forEach((r,ri)=>{
+  const tr=h('tr',null,h('th',{scope:'row'},r));
+  C.forEach((c,ci)=>{
+   const inp=h('input',{type:'radio',name:q.id+'_'+ri,'aria-label':r+' — '+c,checked:a[ri]===ci});
+   inp.addEventListener('change',()=>{a[ri]=ci;touch(q)});
+   tr.append(h('td',null,inp));
+  });
+  body.append(tr);
+ });
+ tb.append(body);
+ return h('div',{class:'gridwrap'},tb);
+}
+
+/* ---------- navegación ---------- */
+function nextIdx(i){
+ const sec=DEF.sections[i];
+ for(const q of sec.q){
+  if(q.go&&q.k==='mc'){
+   const a=answers[q.id];
+   if(a&&a.i!=null&&a.i>=0&&q.go[a.i]!==undefined){
+    const tg=q.go[a.i];
+    if(tg==='SUBMIT')return {submit:true,viaGo:true};
+    return {to:KEY[tg]};
+   }
+  }
+ }
+ if(sec.next&&KEY[sec.next]!==undefined&&KEY[sec.next]!==i+1)return {to:KEY[sec.next]};
+ if(i+1>=DEF.sections.length)return {submit:true};
+ return {to:i+1};
+}
+function isEmpty(q){
+ const a=answers[q.id];
+ switch(q.k){
+  case 'mc':case 'ls':return !a||(a.i==null&&!a.other);
+  case 'cb':return !a||((a.sel||[]).length===0&&!a.other);
+  case 'gr':return !a||Object.keys(a).length===0;
+  case 'sc':return a==null;
+  default:return !a||!String(a).trim();
+ }
+}
+function validate(){
+ const sec=DEF.sections[idx];let first=null;
+ sec.q.forEach(q=>{
+  if(q.k==='info')return;
+  const box=document.querySelector('[data-qid="'+q.id+'"]');
+  const a=answers[q.id];let msg='';
+  if(q.req&&isEmpty(q))msg=q.k==='gr'?t('gridRows'):t('req');
+  else if(q.k==='gr'&&q.req&&Object.keys(a||{}).length<list(q.r,lang).length)msg=t('gridRows');
+  else if((q.k==='mc'||q.k==='cb')&&a&&a.other&&!(a.text||'').trim())msg=t('otherReq');
+  else if(q.k==='em'&&a&&String(a).trim()&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(a).trim()))msg=t('email');
+  else if(q.k==='cb'&&q.max&&a&&cbCount(a)>q.max)msg=t('atMost')+q.max;
+  box.querySelector('.err').textContent=msg;
+  box.classList.toggle('bad',!!msg);
+  if(msg&&!first)first=box;
+ });
+ if(first){first.scrollIntoView({behavior:'smooth',block:'center'});return false}
+ return true;
+}
+function goNext(){
+ if(!validate())return;
+ const n=nextIdx(idx);
+ if(n.submit){declined=(idx===0&&!!n.viaGo);submit();return}
+ hist.push(idx);idx=n.to;render();
+}
+function goBack(){if(!hist.length)return;idx=hist.pop();render()}
+
+/* ---------- datos ---------- */
+function canon(q){
+ const a=answers[q.id];if(a==null)return '';
+ switch(q.k){
+  case 'mc':case 'ls':{const L=list(q.o,'es');if(a.other)return 'Otro: '+(a.text||'');return a.i!=null&&a.i>=0?L[a.i]:''}
+  case 'cb':{const L=list(q.o,'es');const o=(a.sel||[]).slice().sort((x,y)=>x-y).map(i=>L[i]);if(a.other)o.push('Otro: '+(a.text||''));return o.join(' | ')}
+  case 'gr':{const R=list(q.r,'es'),C=list(q.c,'es');return R.map((r,i)=>a[i]!=null?r+': '+C[a[i]]:null).filter(Boolean).join(' | ')}
+  default:return String(a);
+ }
+}
+function submit(){
+ if(declined){view='done';lastRec=null;lastContact=null;render();return}
+ const path=hist.concat([idx]);
+ const rec={id:uid(),ts:new Date().toISOString(),lang:lang,survey:CODE,answers:{}};
+ let contact=null;
+ path.forEach(si=>{
+  const qs=DEF.sections[si].q;
+  qs.forEach(q=>{
+   if(q.k==='info')return;
+   const v=canon(q);
+   if(q.k==='em'){
+    if(v.trim()){const cbq=qs.find(x=>x.k==='cb');contact={id:uid(),ts:rec.ts,lang:lang,email:v.trim(),interest:cbq?canon(cbq):''}}
+    return;
+   }
+   rec.answers[q.id]=v;
+  });
+ });
+ const R=load(K_R);R.push(rec);save(K_R,R);
+ if(contact){const C=load(K_C);C.push(contact);save(K_C,C)}
+ lastRec=rec;lastContact=contact;view='done';render();
+ if(SUBMIT_URL)flushPending().then(showStatus);
+}
+function qIds(){return DEF.sections.flatMap(s=>s.q).filter(q=>q.k!=='info'&&q.k!=='em').map(q=>q.id)}
+function csvCell(v){let s=String(v==null?'':v);if(/^[=+\-@\t\r]/.test(s)&&isNaN(Number(s)))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'}
+function toCSV(rows,header){return '﻿'+[header].concat(rows).map(r=>r.map(csvCell).join(',')).join('\r\n')}
+function respCSV(recs){const ids=qIds();return toCSV(recs.map(r=>[r.id,r.ts,r.lang].concat(ids.map(i=>r.answers[i]||''))),['id','fecha','idioma'].concat(ids))}
+function contactsCSV(cs){return toCSV(cs.map(c=>[c.id,c.ts,c.lang,c.email,c.interest]),['id','fecha','idioma','correo','interes'])}
+function dictCSV(){
+ const rows=[];
+ DEF.sections.forEach(s=>s.q.forEach(q=>{
+  if(q.k==='info')return;
+  const o=(l)=>q.o?list(q.o,l).join(' | '):(q.r?list(q.r,l).join(' | ')+' // '+list(q.c,l).join(' | '):'');
+  rows.push([q.id,s.key,q.k,q.req?'Si':'No',tx(q.t,'es'),tx(q.t,'en'),o('es'),o('en')]);
+ }));
+ return toCSV(rows,['id','seccion','tipo','obligatoria','texto_es','texto_en','opciones_es','opciones_en']);
+}
+function dl(name,text,type){
+ const u=URL.createObjectURL(new Blob([text],{type:type}));
+ const a=h('a',{href:u,download:name});document.body.append(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(u),3000);
+}
+const fname=(s,e)=>'PACIFICS_'+CODE+'_'+s+'.'+e;
+
+/* ---------- pantallas finales ---------- */
+function renderDone(app){
+ const card=h('section',{class:'sec'});
+ if(declined){card.append(h('h2',null,t('declined')))}
+ else{
+  card.append(h('h2',null,tx(DEF.confirm,lang)),
+   SUBMIT_URL?h('p',{class:'intro',id:'sendstatus',role:'status'},t('sending')):h('p',{class:'intro'},t('localNote')+' '+t('sendNote')+CONTACT+'.'));
+  card.append(h('div',{class:'btns'},
+   h('button',{class:'btn',type:'button',onclick:()=>dl(fname('mi_respuesta','json'),JSON.stringify({survey:CODE,exported:new Date().toISOString(),responses:[lastRec],contacts:lastContact?[lastContact]:[]},null,1),'application/json')},t('dlJson')),
+   h('button',{class:'btn ghost',type:'button',onclick:()=>dl(fname('mi_respuesta','csv'),respCSV([lastRec]),'text/csv;charset=utf-8')},t('dlCsv'))));
+ }
+ card.append(h('div',{class:'btns'},h('button',{class:'btn ghost',type:'button',onclick:()=>{idx=0;hist=[];answers={};declined=false;view='survey';render()}},t('again'))));
+ app.append(card,footer());
+}
+function renderAdmin(app){
+ const R=load(K_R),C=load(K_C);
+ const card=h('section',{class:'sec'});
+ card.append(h('h2',null,'Administración — Encuesta '+CODE),
+  h('p',{class:'intro'},'Los datos están guardados solo en este navegador y dispositivo. Para reunir respuestas de varias personas, pídeles su archivo JSON e impórtalo aquí.'),
+  h('table',{class:'adm'},h('tr',null,h('td',null,'Respuestas guardadas'),h('td',null,String(R.length))),h('tr',null,h('td',null,'Contactos (aparte)'),h('td',null,String(C.length))),
+   SUBMIT_URL?h('tr',null,h('td',null,'Pendientes de envío'),h('td',null,String(pendingJobs().length))):null));
+ const b=(txt,fn,g)=>h('button',{class:'btn'+(g?' ghost':''),type:'button',onclick:fn},txt);
+ const fi=h('input',{type:'file',accept:'.json,application/json',multiple:true,style:'display:none'});
+ fi.addEventListener('change',()=>importFiles(fi.files));
+ card.append(h('div',{class:'btns'},
+  b('Descargar respuestas (CSV)',()=>dl(fname('respuestas','csv'),respCSV(R),'text/csv;charset=utf-8')),
+  b('Descargar respuestas (JSON)',()=>dl(fname('respuestas','json'),JSON.stringify({survey:CODE,exported:new Date().toISOString(),responses:R,contacts:C},null,1),'application/json'),true),
+  b('Descargar contactos (CSV)',()=>dl(fname('contactos','csv'),contactsCSV(C),'text/csv;charset=utf-8'),true),
+  b('Descargar diccionario (CSV)',()=>dl(fname('diccionario','csv'),dictCSV(),'text/csv;charset=utf-8'),true)),
+  h('div',{class:'btns'},
+  SUBMIT_URL?b('Reenviar pendientes',()=>{flushPending().then(r=>{alert(r.failed?('No se pudo enviar '+r.failed+' registro(s).'):'Envío completado.');render()})},true):null,
+  b('Importar archivos JSON…',()=>fi.click(),true),fi,
+  b('Borrar todo',()=>{if(confirm('¿Borrar todas las respuestas y contactos guardados en este navegador? No se puede deshacer.')){save(K_R,[]);save(K_C,[]);render()}},true),
+  b('Volver a la encuesta',()=>{location.hash='';},true)));
+ app.append(card);
+}
+function importFiles(files){
+ Promise.all(Array.prototype.map.call(files,f=>f.text())).then(ts=>{
+  let n=0;
+  ts.forEach(tt=>{try{
+   const d=JSON.parse(tt);if(d.survey&&d.survey!==CODE)return;
+   const R=load(K_R),C=load(K_C);const ids=new Set(R.map(x=>x.id)),cs=new Set(C.map(x=>x.id));
+   (d.responses||[]).forEach(x=>{if(x&&x.id&&!ids.has(x.id)){R.push(x);ids.add(x.id);n++}});
+   (d.contacts||[]).forEach(x=>{if(x&&x.id&&!cs.has(x.id)){C.push(x);cs.add(x.id)}});
+   save(K_R,R);save(K_C,C);
+  }catch(e){}});
+  alert('Respuestas nuevas importadas: '+n);render();
+ });
+}
+window.addEventListener('hashchange',render);
+if(SUBMIT_URL)flushPending();
+render();
+})();
+</script>
+</body>
+</html>
